@@ -10,22 +10,48 @@ import UIKit
 
 class ViewController: UIViewController {
     
-   
+    @IBOutlet weak var titleLabel: UILabel!
+    
+    var secondsRemaining = 60
+    var timer = Timer()
+    @IBOutlet weak var ProgressBar: UIProgressView!
     @IBAction func eggPress(_ sender: UIButton) {
         let egg = sender.currentTitle!
+        timer.invalidate()
         let times = ["Soft": 5, "Medium": 7, "Hard": 12]
-        var deez : [Float : String] = [5.0:"Deez"]
-        print(deez[5.0]!)
- 
-        switch egg {
-        case "Soft": print(String(times["Soft"]!) + " You're soft")
-        case "Medium": print(String(times["Medium"]!) + " Boring")
-        case "Hard": print(String(times["Hard"]!) + " Damn bro chill out")
-        default: print("Error")
+       // print(times[egg]!)
+        // display the first pose
+        
+        secondsRemaining = times[egg]!
+       var interval = Float(1.0/Double(times[egg]!))
+      
+       timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { (Timer) in
+            if self.secondsRemaining > 0 {
+                print ("\(self.secondsRemaining) seconds")
+                print(1.0/Double(times[egg]!))
+                self.ProgressBar.progress += interval
+                self.secondsRemaining -= 1
+            } else {
+                Timer.invalidate()
+                self.titleLabel.text = "Done!"
+                self.ProgressBar.progress = 0.0
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    self.titleLabel.text = "How do you like your eggs?"
+                }
+            }
         }
   
     }
     
+        override func viewDidLoad()
+            {
+                super.viewDidLoad()
+
+                // initialise the display
+                ProgressBar.progress = 0.0
+            }
    
     
+
+
 }
